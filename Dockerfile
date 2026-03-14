@@ -33,6 +33,9 @@ RUN apk add --no-cache \
     libjpeg-turbo-dev \
     freetype-dev \
     libxml2-dev \
+    oniguruma-dev \
+    libzip-dev \
+    curl-dev \
     supervisor \
     && docker-php-ext-configure pdo_pgsql \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
@@ -43,9 +46,9 @@ RUN apk add --no-cache \
     gd \
     bcmath \
     xml \
-    json \
-    curl \
-    tokenizer
+    mbstring \
+    zip \
+    curl
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
