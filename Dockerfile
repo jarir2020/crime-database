@@ -36,6 +36,7 @@ RUN apk add --no-cache \
     oniguruma-dev \
     libzip-dev \
     curl-dev \
+    nginx \
     supervisor \
     && docker-php-ext-configure pdo_pgsql \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
@@ -70,23 +71,26 @@ RUN mkdir -p storage bootstrap/cache \
     && chmod -R 755 /var/www/html/storage \
     && chmod -R 755 /var/www/html/bootstrap/cache
 
+# Copy nginx configuration
+COPY docker/nginx.conf /etc/nginx/http.d/default.conf
+
 # Copy supervisor configuration
-COPY docker/supervisor.conf /etc/supervisor/conf.d/laravel.conf
+COPY docker/supervisor.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Generate Laravel key
 RUN php artisan key:generate --force || true
 
 # Expose port
-EXPOSE 9000
+EXPOSE 80
 
 # Create entrypoint script
 RUN echo '#!/bin/sh' > /usr/local/bin/entrypoint.sh && \
     echo 'cd /var/www/html' >> /usr/local/bin/entrypoint.sh && \
     echo 'php artisan migrate --force' >> /usr/local/bin/entrypoint.sh && \
-    echo 'php-fpm' >> /usr/local/bin/entrypoint.sh && \
+    echo '/usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf' >> /usr/local/bin/entrypoint.sh && \
     chmod +x /usr/local/bin/entrypoint.sh
 
-# Set user
-USER www-data
+# Set user to root for supervisor to start multiple services
+USER root
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
