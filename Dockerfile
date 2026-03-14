@@ -32,6 +32,7 @@ RUN apk add --no-cache \
     libpng-dev \
     libjpeg-turbo-dev \
     freetype-dev \
+    libxml2-dev \
     supervisor \
     && docker-php-ext-configure pdo_pgsql \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
