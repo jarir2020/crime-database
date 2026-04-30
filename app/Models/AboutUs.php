@@ -4,14 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
 use App\Traits\SelfHealing;
 
-class Crime extends Model
+class AboutUs extends Model
 {
     use HasFactory, SelfHealing;
 
-    protected $fillable = ['title', 'description', 'location', 'reported_by', 'is_approved'];
+    protected $table = 'about_us';
+    protected $fillable = ['text'];
 
     /**
      * Define the schema for auto-healing.
@@ -19,11 +19,7 @@ class Crime extends Model
     public function getSchemaDefinition(): array
     {
         return [
-            'title' => 'string',
-            'description' => 'text',
-            'location' => 'string',
-            'reported_by' => 'string',
-            'is_approved' => 'boolean',
+            'text' => 'text',
         ];
     }
 }

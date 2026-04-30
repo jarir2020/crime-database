@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+use App\Traits\SelfHealing;
+
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SelfHealing;
 
     /**
      * The attributes that are mass assignable.
@@ -21,7 +23,23 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_admin',
     ];
+
+    /**
+     * Define the schema for auto-healing.
+     */
+    public function getSchemaDefinition(): array
+    {
+        return [
+            'name' => 'string',
+            'email' => 'string',
+            'email_verified_at' => 'timestamp',
+            'password' => 'string',
+            'remember_token' => 'rememberToken',
+            'is_admin' => 'boolean',
+        ];
+    }
 
     /**
      * The attributes that should be hidden for serialization.
